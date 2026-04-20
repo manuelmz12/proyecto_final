@@ -1,0 +1,57 @@
+version: "1.0.0"
+updated: "2026-04-20"
+description: "Omni-Analyst multi-agent catalog — versioned prompts and model configuration"
+
+agents:
+  router:
+    id: router_v1
+    description: "Classifies user query intent into rag/graph/hybrid/general"
+    model: devlab-gpt-4o-mini
+    deployment_env_var: AZURE_OPENAI_DEPLOYMENT_MINI
+    temperature: 0
+    prompt_version: "v1.0"
+    max_tokens: 200
+
+  rag:
+    id: rag_v1
+    description: "Hybrid dense+lexical search over ChromaDB + BM25 with deduplication"
+    model: devlab-gpt-4o-mini
+    deployment_env_var: AZURE_OPENAI_DEPLOYMENT_MINI
+    temperature: 0.2
+    prompt_version: "v1.0"
+    top_k: 5
+    embeddings_model: text-embedding-3-small
+
+  graph_rag:
+    id: graph_rag_v1
+    description: "Text-to-Cypher agent for Neo4j knowledge graph queries"
+    model: devlab-gpt-4o-mini
+    deployment_env_var: AZURE_OPENAI_DEPLOYMENT_CHAT
+    temperature: 0
+    prompt_version: "v1.0"
+    max_cypher_results: 20
+
+  synthesis:
+    id: synthesis_v1
+    description: "Final answer synthesis from RAG and graph contexts"
+    model: devlab-gpt-4o-mini
+    deployment_env_var: AZURE_OPENAI_DEPLOYMENT_CHAT
+    temperature: 0.3
+    prompt_version: "v1.0"
+
+embeddings:
+  model: devlab-text-embedding-3-large
+  provider: azure_openai
+  dimensions: 1536
+
+graph_schema:
+  nodes:
+    - Paper
+    - Author
+    - Institution
+    - Concept
+  relationships:
+    - WROTE
+    - CITES
+    - FROM_INSTITUTION
+    - COVERS
