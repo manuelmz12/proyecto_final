@@ -8,18 +8,19 @@ Flow:
 import asyncio
 import logging
 import os
-from typing import Annotated, Any, TypedDict
+from typing import Any, TypedDict
 
 from langgraph.graph import END, StateGraph
 
 try:
-    from langfuse.callback import CallbackHandler as LangfuseCallback
+    from langfuse.decorators import observe, langfuse_context
     _langfuse_available = (
         bool(os.environ.get("LANGFUSE_PUBLIC_KEY")) and
         bool(os.environ.get("LANGFUSE_SECRET_KEY"))
     )
 except ImportError:
     _langfuse_available = False
+    observe = lambda f: f  # no-op decorator if langfuse not installed
 
 from agents.router_agent import route_query
 from agents.rag_agent import rag_agent_run
@@ -151,8 +152,16 @@ def get_compiled_graph():
     return _compiled_graph
 
 
+@observe()
 async def run_agent(query: str, chat_history: list[dict], session_id: str) -> dict:
     """Run the full multi-agent pipeline."""
+    if _langfuse_available:
+        langfuse_context.update_current_trace(
+            session_id=session_id,
+            user_id=session_id,
+            input=query,
+        )
+
     graph = get_compiled_graph()
     initial_state: AgentState = {
         "query": query,
@@ -165,17 +174,11 @@ async def run_agent(query: str, chat_history: list[dict], session_id: str) -> di
         "cypher_used": None,
     }
     logger.info(f"Running agent for session={session_id}, query='{query[:60]}...'")
-    config = {}
+    result = await graph.ainvoke(initial_state)
+
     if _langfuse_available:
-        handler = LangfuseCallback(
-            public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
-            secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-            host=os.environ.get("LANGFUSE_HOST", "http://langfuse:3000"),
-            session_id=session_id,
-            user_id=session_id,
-        )
-        config = {"callbacks": [handler]}
-    result = await graph.ainvoke(initial_state, config=config)
+        langfuse_context.update_current_trace(output=result["final_answer"])
+
     return {
         "answer": result["final_answer"],
         "intent": result["intent"],
