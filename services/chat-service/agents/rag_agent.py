@@ -1,11 +1,11 @@
 import logging
 import os
-import sys
 
 import chromadb
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
+from openai import AzureOpenAI
+from langchain_openai import AzureChatOpenAI
 
-sys.path.insert(0, "/app/bm25_index")
+from bm25_retriever import bm25_search
 
 logger = logging.getLogger(__name__)
 
@@ -27,13 +27,15 @@ def _get_chroma_client() -> chromadb.HttpClient:
     return chromadb.HttpClient(host=host, port=port)
 
 
-def _get_embeddings_model() -> AzureOpenAIEmbeddings:
-    return AzureOpenAIEmbeddings(
-        azure_deployment=os.environ.get("AZURE_OPENAI_DEPLOYMENT_EMBEDDINGS", "devlab-text-embedding-3-large"),
-        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+def _embed_query(query: str) -> list[float]:
+    client = AzureOpenAI(
         api_key=os.environ["AZURE_OPENAI_API_KEY"],
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2025-01-01-preview"),
     )
+    model = os.environ.get("AZURE_OPENAI_DEPLOYMENT_EMBEDDINGS", "devlab-text-embedding-3-large")
+    response = client.embeddings.create(input=query, model=model)
+    return response.data[0].embedding
 
 
 def _get_chat_llm() -> AzureChatOpenAI:
@@ -53,8 +55,7 @@ async def hybrid_search(query: str, top_k: int = TOP_K) -> list[dict]:
 
     # Dense retrieval via ChromaDB
     try:
-        embeddings_model = _get_embeddings_model()
-        query_embedding = embeddings_model.embed_query(query)
+        query_embedding = _embed_query(query)
         client = _get_chroma_client()
         collection = client.get_collection(COLLECTION_NAME)
         dense_results = collection.query(
@@ -76,8 +77,6 @@ async def hybrid_search(query: str, top_k: int = TOP_K) -> list[dict]:
 
     # Lexical retrieval via BM25
     try:
-        from pipeline.bm25_index import bm25_search
-
         for item in bm25_search(query, top_k=top_k):
             if item["title"] not in seen_titles:
                 seen_titles.add(item["title"])

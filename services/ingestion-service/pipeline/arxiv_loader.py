@@ -8,7 +8,7 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-ARXIV_BASE_URL = "http://export.arxiv.org/api/query"
+ARXIV_BASE_URL = "https://export.arxiv.org/api/query"
 
 
 async def fetch_arxiv_papers(

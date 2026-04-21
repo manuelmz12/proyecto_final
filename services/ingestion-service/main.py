@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -72,8 +71,10 @@ async def run_ingestion_pipeline(categories: list[str], max_papers: int, days_ba
 @app.post("/ingest/trigger", response_model=IngestResponse)
 async def trigger_ingestion(request: IngestRequest, background_tasks: BackgroundTasks):
     background_tasks.add_task(
-        asyncio.create_task,
-        run_ingestion_pipeline(request.categories, request.max_papers, request.days_back),
+        run_ingestion_pipeline,
+        request.categories,
+        request.max_papers,
+        request.days_back,
     )
     return IngestResponse(
         status="accepted",

@@ -14,22 +14,23 @@ NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD", "")
 CYPHER_GENERATION_PROMPT = """You are an expert at generating Cypher queries for a Neo4j graph database about ArXiv research papers.
 
 Graph schema:
-- (Paper {arxiv_id, title, abstract, published, url, categories})
-- (Author {name})
-- (Institution {name})
-- (Concept {name})
+- (Paper {{arxiv_id, title, abstract, published, url, categories}})
+- (Author {{name}})
+- (Institution {{name}})
+- (Concept {{name}})
 - (Paper)-[:CITES]->(Paper)
 - (Author)-[:WROTE]->(Paper)
 - (Paper)-[:FROM_INSTITUTION]->(Institution)
 - (Paper)-[:COVERS]->(Concept)
 
 Generate a Cypher READ query to answer the user's question.
-Return ONLY valid JSON: {"cypher": "<query>", "explanation": "<brief explanation>"}
+Return ONLY valid JSON: {{"cypher": "<query>", "explanation": "<brief explanation>"}}
 
 Rules:
 - Use LIMIT 10 unless user asks for more
 - Use case-insensitive matching with toLower() for name searches
 - Never generate WRITE queries (CREATE, MERGE, DELETE, SET)
+- Use COUNT {{ }} instead of size() for counting patterns (e.g. COUNT {{ (p)<-[:CITES]-(:Paper) }})
 - If the question cannot be answered with the graph, set cypher to null
 
 User question: {question}"""

@@ -1,11 +1,11 @@
 import json
 import logging
 import os
+import re
 from typing import Any
 
 from neo4j import AsyncGraphDatabase
 from openai import AzureOpenAI
-from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
 
@@ -31,17 +31,23 @@ Paper title: {title}
 Abstract: {abstract}"""
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
 def _extract_entities(title: str, abstract: str) -> dict:
-    response = llm_client.chat.completions.create(
-        model=MINI_MODEL,
-        messages=[
-            {"role": "user", "content": ENTITY_EXTRACTION_PROMPT.format(title=title, abstract=abstract[:800])}
-        ],
-        response_format={"type": "json_object"},
-        temperature=0,
-    )
-    return json.loads(response.choices[0].message.content)
+    try:
+        response = llm_client.chat.completions.create(
+            model=MINI_MODEL,
+            messages=[
+                {"role": "user", "content": ENTITY_EXTRACTION_PROMPT.format(title=title, abstract=abstract[:800])}
+            ],
+            temperature=0,
+        )
+        content = response.choices[0].message.content or ""
+        match = re.search(r"\{.*\}", content, re.DOTALL)
+        if not match:
+            return {"concepts": [], "institutions": []}
+        return json.loads(match.group())
+    except Exception as e:
+        logger.warning(f"Entity extraction error ({type(e).__name__}): {e}")
+        return {"concepts": [], "institutions": []}
 
 
 async def upsert_to_neo4j(papers: list[dict[str, Any]]) -> None:

@@ -1,6 +1,7 @@
 import re
 import logging
 from presidio_analyzer import AnalyzerEngine
+from presidio_analyzer.nlp_engine import NlpEngineProvider
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,11 @@ PII_ENTITIES = ["PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD", "IBAN_CODE", "NR
 def _get_analyzer() -> AnalyzerEngine:
     global _analyzer
     if _analyzer is None:
-        _analyzer = AnalyzerEngine()
+        provider = NlpEngineProvider(nlp_configuration={
+            "nlp_engine_name": "spacy",
+            "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],
+        })
+        _analyzer = AnalyzerEngine(nlp_engine=provider.create_engine())
     return _analyzer
 
 
