@@ -53,7 +53,7 @@ async def hybrid_search(query: str, top_k: int = TOP_K) -> list[dict]:
     seen_titles: set[str] = set()
     results: list[dict] = []
 
-    # Dense retrieval via ChromaDB
+    # ChromaDB
     try:
         query_embedding = _embed_query(query)
         client = _get_chroma_client()
@@ -75,7 +75,7 @@ async def hybrid_search(query: str, top_k: int = TOP_K) -> list[dict]:
     except Exception as e:
         logger.warning(f"Dense search failed: {e}")
 
-    # Lexical retrieval via BM25
+    # BM25
     try:
         for item in bm25_search(query, top_k=top_k):
             if item["title"] not in seen_titles:

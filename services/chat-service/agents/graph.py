@@ -7,9 +7,19 @@ Flow:
 
 import asyncio
 import logging
+import os
 from typing import Annotated, Any, TypedDict
 
 from langgraph.graph import END, StateGraph
+
+try:
+    from langfuse.callback import CallbackHandler as LangfuseCallback
+    _langfuse_available = (
+        bool(os.environ.get("LANGFUSE_PUBLIC_KEY")) and
+        bool(os.environ.get("LANGFUSE_SECRET_KEY"))
+    )
+except ImportError:
+    _langfuse_available = False
 
 from agents.router_agent import route_query
 from agents.rag_agent import rag_agent_run
@@ -155,7 +165,17 @@ async def run_agent(query: str, chat_history: list[dict], session_id: str) -> di
         "cypher_used": None,
     }
     logger.info(f"Running agent for session={session_id}, query='{query[:60]}...'")
-    result = await graph.ainvoke(initial_state)
+    config = {}
+    if _langfuse_available:
+        handler = LangfuseCallback(
+            public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
+            secret_key=os.environ["LANGFUSE_SECRET_KEY"],
+            host=os.environ.get("LANGFUSE_HOST", "http://langfuse:3000"),
+            session_id=session_id,
+            user_id=session_id,
+        )
+        config = {"callbacks": [handler]}
+    result = await graph.ainvoke(initial_state, config=config)
     return {
         "answer": result["final_answer"],
         "intent": result["intent"],

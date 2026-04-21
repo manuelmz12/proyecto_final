@@ -1,0 +1,82 @@
+[
+  {
+    "question": "What is Retrieval-Augmented Generation (RAG) and what problem does it solve?",
+    "ground_truth": "RAG is a technique that combines information retrieval with language generation. It solves the problem of LLMs having outdated or missing knowledge by retrieving relevant documents from an external knowledge base and conditioning the generation on that retrieved context."
+  },
+  {
+    "question": "What are the main components of a transformer architecture?",
+    "ground_truth": "A transformer consists of an encoder and decoder (in the original model), using multi-head self-attention mechanisms, feed-forward networks, positional encodings, layer normalization, and residual connections. The attention mechanism allows the model to weigh the importance of different tokens in the input."
+  },
+  {
+    "question": "What is the difference between dense retrieval and sparse retrieval in information retrieval?",
+    "ground_truth": "Dense retrieval uses neural embeddings to represent queries and documents in a continuous vector space, enabling semantic similarity search. Sparse retrieval uses term-based methods like BM25 or TF-IDF that rely on exact keyword matching. Dense retrieval captures semantic meaning while sparse retrieval is more efficient and handles exact matches better."
+  },
+  {
+    "question": "What are diffusion models and how are they used in image generation?",
+    "ground_truth": "Diffusion models are generative models that learn to reverse a gradual noising process. During training, noise is progressively added to data; during generation, the model learns to denoise step by step. They have achieved state-of-the-art results in image synthesis (e.g., Stable Diffusion, DALL-E 2)."
+  },
+  {
+    "question": "What is instruction fine-tuning in large language models?",
+    "ground_truth": "Instruction fine-tuning is a technique where pre-trained language models are further trained on datasets of instruction-response pairs to make them follow human instructions more effectively. This improves the model's ability to generalize to new tasks described in natural language."
+  },
+  {
+    "question": "What are graph neural networks and what are their main applications?",
+    "ground_truth": "Graph Neural Networks (GNNs) are deep learning models designed to operate on graph-structured data by propagating information through nodes and edges. Main applications include social network analysis, molecular property prediction, recommendation systems, and knowledge graph reasoning."
+  },
+  {
+    "question": "What is knowledge distillation in machine learning?",
+    "ground_truth": "Knowledge distillation is a model compression technique where a smaller student model is trained to mimic the behavior of a larger teacher model. The student learns from the teacher's soft probability outputs, transferring knowledge while reducing model size and computational cost."
+  },
+  {
+    "question": "What is the role of RLHF in training large language models?",
+    "ground_truth": "Reinforcement Learning from Human Feedback (RLHF) is a technique used to align LLMs with human preferences. A reward model is trained on human preference data, then the LLM is fine-tuned using reinforcement learning to maximize this reward, making outputs more helpful, harmless, and honest."
+  },
+  {
+    "question": "What are mixture of experts (MoE) models in deep learning?",
+    "ground_truth": "Mixture of Experts models use multiple specialized sub-networks (experts) with a gating mechanism that routes each input to the most relevant experts. This allows scaling model capacity while keeping computational cost manageable, as only a subset of experts is activated per input."
+  },
+  {
+    "question": "What is GraphRAG and how does it differ from traditional RAG?",
+    "ground_truth": "GraphRAG combines knowledge graphs with retrieval-augmented generation. Unlike traditional RAG which retrieves chunks of text, GraphRAG traverses a knowledge graph to find relevant entities and relationships, enabling more structured reasoning about connections between concepts, authors, and papers."
+  },
+  {
+    "question": "What are the main evaluation metrics for information retrieval systems?",
+    "ground_truth": "Key IR metrics include Precision (fraction of retrieved documents that are relevant), Recall (fraction of relevant documents retrieved), F1-score, Mean Average Precision (MAP), Normalized Discounted Cumulative Gain (NDCG), and Mean Reciprocal Rank (MRR)."
+  },
+  {
+    "question": "What is LoRA and how does it enable efficient fine-tuning of large models?",
+    "ground_truth": "LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning method that freezes the pre-trained model weights and injects trainable low-rank decomposition matrices into each layer. This drastically reduces the number of trainable parameters while maintaining model quality."
+  },
+  {
+    "question": "What are neural scaling laws in machine learning?",
+    "ground_truth": "Neural scaling laws describe predictable power-law relationships between model performance and resources like model size, dataset size, and compute. Research by Kaplan et al. and Hoffmann et al. (Chinchilla) showed that model performance improves smoothly as these factors scale up."
+  },
+  {
+    "question": "What is contrastive learning and how is it used in representation learning?",
+    "ground_truth": "Contrastive learning trains models to bring representations of similar examples closer together while pushing dissimilar examples apart. It is widely used in self-supervised learning (e.g., SimCLR, CLIP) to learn high-quality representations without labeled data."
+  },
+  {
+    "question": "What are multimodal language models and what can they do?",
+    "ground_truth": "Multimodal language models process and generate content across multiple modalities such as text, images, audio, and video. Models like GPT-4V, Gemini, and LLaVA can understand image-text pairs, answer questions about images, and generate content that integrates multiple modalities."
+  },
+  {
+    "question": "What is flash attention and why is it important for transformer efficiency?",
+    "ground_truth": "Flash Attention is an IO-aware exact attention algorithm that reorders attention computation to minimize memory reads/writes between GPU HBM and SRAM. It achieves significant speedups and memory savings compared to standard attention, enabling training of models with much longer context windows."
+  },
+  {
+    "question": "What are retrieval augmented generation evaluation frameworks?",
+    "ground_truth": "Frameworks like RAGAS evaluate RAG systems using metrics such as faithfulness (are answers grounded in context?), answer relevancy (is the answer relevant to the question?), context recall (was the relevant context retrieved?), and context precision. TruLens and ARES are alternative frameworks."
+  },
+  {
+    "question": "What is chain-of-thought prompting and when is it effective?",
+    "ground_truth": "Chain-of-thought prompting encourages LLMs to produce intermediate reasoning steps before giving a final answer. It is particularly effective for complex reasoning tasks like math problems, logical inference, and multi-step question answering, significantly improving accuracy on such benchmarks."
+  },
+  {
+    "question": "What are the main challenges in deploying large language models in production?",
+    "ground_truth": "Key challenges include inference latency and cost, memory requirements, maintaining model quality with quantization/pruning, handling hallucinations, ensuring output safety, managing context length, monitoring for drift, implementing guardrails, and achieving horizontal scalability."
+  },
+  {
+    "question": "What is the Mamba architecture and how does it compare to transformers?",
+    "ground_truth": "Mamba is a selective state space model (SSM) architecture that achieves linear-time sequence modeling. Unlike transformers with quadratic attention complexity, Mamba uses selective state spaces to efficiently process long sequences, showing competitive or superior performance while being more computationally efficient."
+  }
+]
