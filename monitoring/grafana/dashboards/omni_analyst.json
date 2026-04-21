@@ -1,0 +1,122 @@
+{
+  "title": "Omni-Analyst Dashboard",
+  "uid": "omni-analyst-main",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Chat Requests / min",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "targets": [
+        {
+          "expr": "rate(chat_requests_total[1m]) * 60",
+          "legendFormat": "Requests/min"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Chat Latency P95 (seconds)",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(chat_latency_seconds_bucket[5m]))",
+          "legendFormat": "P95 Latency"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Papers Ingested Total",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "targets": [
+        {
+          "expr": "papers_ingested_total",
+          "legendFormat": "Papers"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Guardrail Blocks",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "targets": [
+        {
+          "expr": "sum(guardrail_blocks_total)",
+          "legendFormat": "Blocks"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Chat Latency Distribution",
+      "type": "graph",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(chat_latency_seconds_bucket[5m]))",
+          "legendFormat": "P50"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(chat_latency_seconds_bucket[5m]))",
+          "legendFormat": "P95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(chat_latency_seconds_bucket[5m]))",
+          "legendFormat": "P99"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Chat Requests by Status",
+      "type": "graph",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "targets": [
+        {
+          "expr": "rate(chat_requests_total[5m])",
+          "legendFormat": "{{status}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "RAGAS Evaluation Scores",
+      "type": "bargauge",
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 12},
+      "options": {"orientation": "horizontal", "reduceOptions": {"calcs": ["lastNotNull"]}},
+      "targets": [
+        {
+          "expr": "eval_faithfulness_score",
+          "legendFormat": "Faithfulness"
+        },
+        {
+          "expr": "eval_answer_relevancy_score",
+          "legendFormat": "Answer Relevancy"
+        },
+        {
+          "expr": "eval_context_recall_score",
+          "legendFormat": "Context Recall"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Ingestion Duration (seconds)",
+      "type": "graph",
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 12},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(ingestion_duration_seconds_bucket[10m]))",
+          "legendFormat": "P95 Ingestion Duration"
+        }
+      ]
+    }
+  ]
+}

@@ -24,7 +24,7 @@ async def fetch_arxiv_papers(
         "sortOrder": "descending",
     }
 
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(timeout=60) as client:
         resp = await client.get(ARXIV_BASE_URL, params=params)
         resp.raise_for_status()
 

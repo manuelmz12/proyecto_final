@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "ingestion-service"
+    static_configs:
+      - targets: ["ingestion-service:8001"]
+    metrics_path: /metrics
+
+  - job_name: "chat-service"
+    static_configs:
+      - targets: ["chat-service:8002"]
+    metrics_path: /metrics
+
+  - job_name: "evaluation-service"
+    static_configs:
+      - targets: ["evaluation-service:8003"]
+    metrics_path: /metrics
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
