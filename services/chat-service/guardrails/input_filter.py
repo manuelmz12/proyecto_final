@@ -1,14 +1,12 @@
 import re
 import logging
-from presidio_analyzer import AnalyzerEngine
-from presidio_analyzer.nlp_engine import NlpEngineProvider
 
 logger = logging.getLogger(__name__)
 
-_analyzer: AnalyzerEngine | None = None
+_analyzer = None
 
 PROMPT_INJECTION_PATTERNS = [
-    r"ignore (all |previous |above )?instructions",
+    r"ignore.{0,20}instructions",
     r"disregard (all |previous |above )?instructions",
     r"you are now",
     r"act as (a |an )?(?!research|assistant|analyst)",
@@ -22,9 +20,11 @@ PROMPT_INJECTION_PATTERNS = [
 PII_ENTITIES = ["PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD", "IBAN_CODE", "NRP"]
 
 
-def _get_analyzer() -> AnalyzerEngine:
+def _get_analyzer():
     global _analyzer
     if _analyzer is None:
+        from presidio_analyzer import AnalyzerEngine
+        from presidio_analyzer.nlp_engine import NlpEngineProvider
         provider = NlpEngineProvider(nlp_configuration={
             "nlp_engine_name": "spacy",
             "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],

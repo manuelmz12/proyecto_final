@@ -42,6 +42,14 @@ class TestBM25Index:
                 "published": "2024-01-02",
                 "url": "https://arxiv.org/abs/2401.00002",
             },
+            {
+                "arxiv_id": "2401.00003",
+                "title": "Generative Adversarial Networks for Image Synthesis",
+                "abstract": "GANs learn to generate realistic images using a discriminator and generator network.",
+                "authors": ["Goodfellow et al."],
+                "published": "2024-01-03",
+                "url": "https://arxiv.org/abs/2401.00003",
+            },
         ]
 
         bm25_index.update_bm25_index(papers)

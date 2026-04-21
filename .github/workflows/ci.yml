@@ -30,7 +30,7 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          pip install pytest pytest-asyncio pytest-cov httpx pydantic rank-bm25
+          pip install pytest pytest-asyncio pytest-cov httpx pydantic rank-bm25 bcrypt "fastapi==0.109.2"
 
       - name: Run unit tests
         run: |
