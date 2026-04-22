@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
 from pydantic import BaseModel
@@ -69,23 +69,7 @@ async def run_ingestion_pipeline(categories: list[str], max_papers: int, days_ba
 
 
 @app.post("/ingest/trigger", response_model=IngestResponse)
-async def trigger_ingestion(request: IngestRequest, background_tasks: BackgroundTasks):
-    background_tasks.add_task(
-        run_ingestion_pipeline,
-        request.categories,
-        request.max_papers,
-        request.days_back,
-    )
-    return IngestResponse(
-        status="accepted",
-        papers_processed=0,
-        message=f"Ingestion triggered for categories: {request.categories}",
-    )
-
-
-@app.post("/ingest/trigger/sync", response_model=IngestResponse)
-async def trigger_ingestion_sync(request: IngestRequest):
-    """Synchronous version for Airflow DAG triggers."""
+async def trigger_ingestion(request: IngestRequest):
     result = await run_ingestion_pipeline(request.categories, request.max_papers, request.days_back)
     return IngestResponse(
         status=result["status"],

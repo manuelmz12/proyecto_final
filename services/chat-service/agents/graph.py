@@ -156,11 +156,13 @@ def get_compiled_graph():
 async def run_agent(query: str, chat_history: list[dict], session_id: str) -> dict:
     """Run the full multi-agent pipeline."""
     if _langfuse_available:
-        langfuse_context.update_current_trace(
-            session_id=session_id,
-            user_id=session_id,
-            input=query,
-        )
+        try:
+            langfuse_context.update_current_trace(
+                session_id=session_id,
+                user_id=session_id,
+            )
+        except Exception as e:
+            logger.warning(f"Langfuse trace update failed: {e}")
 
     graph = get_compiled_graph()
     initial_state: AgentState = {
@@ -175,9 +177,6 @@ async def run_agent(query: str, chat_history: list[dict], session_id: str) -> di
     }
     logger.info(f"Running agent for session={session_id}, query='{query[:60]}...'")
     result = await graph.ainvoke(initial_state)
-
-    if _langfuse_available:
-        langfuse_context.update_current_trace(output=result["final_answer"])
 
     return {
         "answer": result["final_answer"],

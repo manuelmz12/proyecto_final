@@ -53,7 +53,7 @@ class ChatResponse(BaseModel):
 @app.post("/chat", response_model=ChatResponse)
 async def chat(
     request: ChatRequest,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(require_admin),
 ):
     session_id = request.session_id or str(uuid.uuid4())
 

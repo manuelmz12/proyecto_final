@@ -103,8 +103,7 @@ def run_evaluation(max_questions: int = 10) -> dict:
                 questions.append(item["question"])
                 answers.append(response["answer"])
                 contexts.append(
-                    [s.get("title", "") + ": " + s.get("url", "") for s in response.get("sources", [])]
-                    or ["No context retrieved"]
+                    response.get("retrieved_context", []) or ["No context retrieved"]
                 )
                 ground_truths.append(item["ground_truth"])
                 logger.info(f"Evaluated Q{i+1}/{len(test_data)}: {item['question'][:50]}...")

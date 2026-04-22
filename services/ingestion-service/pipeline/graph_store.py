@@ -22,10 +22,10 @@ MINI_MODEL = os.environ.get("AZURE_OPENAI_DEPLOYMENT_MINI", "devlab-gpt-4o-mini"
 
 ENTITY_EXTRACTION_PROMPT = """Extract structured entities from this research paper abstract.
 Return ONLY valid JSON with this exact schema:
-{
+{{
   "concepts": ["list of key technical concepts/methods, max 5"],
   "institutions": ["list of research institutions mentioned, max 5"]
-}
+}}
 
 Paper title: {title}
 Abstract: {abstract}"""

@@ -2,7 +2,7 @@ import logging
 import os
 
 from langchain_openai import AzureChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 logger = logging.getLogger(__name__)
 
@@ -46,9 +46,11 @@ async def synthesis_agent_run(
     system_content = SYSTEM_PROMPT.format(rag_context=rag_context, graph_context=graph_context)
 
     messages = [SystemMessage(content=system_content)]
-    for msg in chat_history[-4:]:
+    for msg in chat_history[-6:]:
         if msg["role"] == "user":
             messages.append(HumanMessage(content=msg["content"]))
+        elif msg["role"] == "assistant":
+            messages.append(AIMessage(content=msg["content"]))
 
     messages.append(HumanMessage(content=query))
 
