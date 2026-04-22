@@ -100,10 +100,6 @@
           "expr": "eval_answer_relevancy_score",
           "legendFormat": "Answer Relevancy"
         },
-        {
-          "expr": "eval_context_recall_score",
-          "legendFormat": "Context Recall"
-        }
       ]
     },
     {

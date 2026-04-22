@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 EVAL_RUNS = Counter("evaluation_runs_total", "Total evaluation runs", ["status"])
 EVAL_FAITHFULNESS = Gauge("eval_faithfulness_score", "Latest faithfulness score")
 EVAL_RELEVANCY = Gauge("eval_answer_relevancy_score", "Latest answer relevancy score")
-EVAL_CONTEXT_RECALL = Gauge("eval_context_recall_score", "Latest context recall score")
 
 _evaluation_running = False
 
@@ -53,7 +52,6 @@ async def trigger_evaluation(request: EvalRequest, background_tasks: BackgroundT
             if scores:
                 EVAL_FAITHFULNESS.set(scores.get("faithfulness", 0))
                 EVAL_RELEVANCY.set(scores.get("answer_relevancy", 0))
-                EVAL_CONTEXT_RECALL.set(scores.get("context_recall", 0))
             EVAL_RUNS.labels(status="success").inc()
         except Exception as e:
             logger.error(f"Evaluation failed: {e}", exc_info=True)

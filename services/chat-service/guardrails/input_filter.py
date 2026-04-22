@@ -4,15 +4,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 PROMPT_INJECTION_PATTERNS = [
-    r"ignore.{0,20}instructions",
-    r"disregard (all |previous |above )?instructions",
+    r"ignore.{0,30}instructions",
+    r"disregard.{0,40}(instructions|told|said)",
+    r"forget.{0,30}instructions",
+    r"override.{0,30}instructions",
     r"you are now",
     r"act as (a |an )?(?!research|assistant|analyst)",
-    r"forget (everything|your instructions)",
     r"jailbreak",
-    r"DAN mode",
+    r"dan mode",
     r"system prompt",
     r"reveal (your|the) (prompt|instructions|system)",
+    r"new persona",
+    r"pretend (you are|to be)",
 ]
 
 

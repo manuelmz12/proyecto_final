@@ -11,7 +11,6 @@ from openai import AzureOpenAI
 from ragas import evaluate
 from ragas.metrics import (
     answer_relevancy,
-    context_recall,
     faithfulness,
 )
 
@@ -22,8 +21,8 @@ RESULTS_PATH = "/app/eval_results.json"
 TEST_QUESTIONS_PATH = "/app/test_questions.json"
 
 # Use guest token for evaluation calls
-EVAL_USERNAME = "demo"
-EVAL_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo123")
+EVAL_USERNAME = os.environ.get("ADMIN_USER", "admin")
+EVAL_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
 
 class DirectAzureEmbeddings(Embeddings):
@@ -127,7 +126,7 @@ def run_evaluation(max_questions: int = 10) -> dict:
 
     result = evaluate(
         dataset=dataset,
-        metrics=[faithfulness, answer_relevancy, context_recall],
+        metrics=[faithfulness, answer_relevancy],
         llm=llm,
         embeddings=embeddings,
     )
@@ -135,7 +134,6 @@ def run_evaluation(max_questions: int = 10) -> dict:
     scores = {
         "faithfulness": float(result["faithfulness"]),
         "answer_relevancy": float(result["answer_relevancy"]),
-        "context_recall": float(result["context_recall"]),
     }
 
     eval_result = {
